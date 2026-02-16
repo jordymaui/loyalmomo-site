@@ -35,17 +35,21 @@ export default function MomoSprite() {
 
   const sizeRef = useRef(getSize());
 
-  // Pick targets near the center of the screen — within 30% margins
+  // Pick targets around the text content in an orbit
+  const angleRef = useRef(Math.random() * Math.PI * 2);
+  
   const pickDirection = useCallback((pos: Position) => {
     const size = sizeRef.current;
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
+    const centerX = window.innerWidth / 2 - size / 2;
+    const centerY = window.innerHeight / 2 - size / 2;
 
-    // Keep Momo in a tight zone around the centre — max 250px from centre on each axis
-    const rangeX = Math.min(250, (window.innerWidth - size) / 2 - 20);
-    const rangeY = Math.min(200, (window.innerHeight - size) / 2 - 20);
-    const targetX = centerX - size / 2 + (Math.random() - 0.5) * rangeX * 2;
-    const targetY = centerY - size / 2 + (Math.random() - 0.5) * rangeY * 2;
+    // Move to next point on an orbit around the text
+    // Randomise the angle jump so it's not a perfect circle
+    angleRef.current += (Math.PI / 3) + Math.random() * (Math.PI / 2);
+    const radiusX = Math.min(300, window.innerWidth * 0.25);
+    const radiusY = Math.min(180, window.innerHeight * 0.2);
+    const targetX = centerX + Math.cos(angleRef.current) * radiusX;
+    const targetY = centerY + Math.sin(angleRef.current) * radiusY;
 
     const dx = targetX - pos.x;
     const dy = targetY - pos.y;
@@ -67,9 +71,9 @@ export default function MomoSprite() {
     const pos = posRef.current;
     const size = sizeRef.current;
 
-    // Start near center
-    pos.x = (window.innerWidth - size) / 2 + (Math.random() - 0.5) * 200;
-    pos.y = (window.innerHeight - size) / 2 + (Math.random() - 0.5) * 100;
+    // Start above the "Momo" title text
+    pos.x = (window.innerWidth - size) / 2;
+    pos.y = (window.innerHeight / 2) - size - 120;
     setMounted(true);
 
     const handleResize = () => { sizeRef.current = getSize(); };
