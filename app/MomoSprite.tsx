@@ -112,12 +112,12 @@ export default function MomoSprite() {
       <div
         ref={elRef}
         className="relative"
-        style={{ width: 100, height: 100, willChange: "transform" }}
+        style={{ width: 160, height: 160, willChange: "transform" }}
       >
         <div
           ref={shadowRef}
           className="absolute bottom-0 left-1/2 rounded-full bg-black/25 blur-md"
-          style={{ width: 50, height: 6, transition: "transform 0.1s, opacity 0.1s" }}
+          style={{ width: 80, height: 8, transition: "transform 0.1s, opacity 0.1s" }}
         />
         <img
           ref={imgRef}
