@@ -7,9 +7,10 @@ const MomoSprite = dynamic(() => import("./MomoSprite"), { ssr: false });
 export default function Home() {
   return (
     <main className="relative min-h-[100dvh] w-screen flex items-center justify-center select-none overflow-hidden bg-[#0a0a0a] px-4">
-      <MomoSprite />
-
       <div id="content-anchor" className="text-center z-20 relative max-w-md w-full">
+        {/* Momo is a CHILD of this div — orbits around it */}
+        <MomoSprite />
+
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-3 sm:mb-4 text-white">
           Momo
         </h1>
@@ -26,7 +27,6 @@ export default function Home() {
           {" "}and I&apos;m building in public, everyday.
         </p>
 
-        {/* X Profile Card */}
         <a
           href="https://x.com/loyalmomobot"
           target="_blank"

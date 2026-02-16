@@ -1,32 +1,26 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function MomoSprite() {
-  const rafRef = useRef<number>(0);
   const elRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const shadowRef = useRef<HTMLDivElement>(null);
-  const [mounted, setMounted] = useState(false);
-
-  const angleRef = useRef(-Math.PI / 2);
-  const targetAngleRef = useRef(-Math.PI / 2);
-  const stateRef = useRef<"walk" | "idle">("idle");
-  const timerRef = useRef(90);
-  const runFrameRef = useRef(0);
-  const tickRef = useRef(0);
-  const prevXRef = useRef(0);
-
-  const getSize = () => {
-    if (typeof window === "undefined") return 100;
-    if (window.innerWidth < 480) return 60;
-    if (window.innerWidth < 768) return 80;
-    return 100;
-  };
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
-    setMounted(true);
+    const el = elRef.current;
+    const img = imgRef.current;
+    const shadow = shadowRef.current;
+    if (!el || !img || !shadow) return;
 
+    let angle = -Math.PI / 2; // start at top
+    let targetAngle = -Math.PI / 2;
+    let state: "walk" | "idle" = "idle";
+    let timer = 90;
+    let runFrame = 0;
+    let tick = 0;
+    let prevX = 0;
     let lastTime = 0;
     const FRAME_MS = 1000 / 30;
 
@@ -42,95 +36,70 @@ export default function MomoSprite() {
       if (ts - lastTime < FRAME_MS) return;
       lastTime = ts - ((ts - lastTime) % FRAME_MS);
 
-      const size = getSize();
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
+      // Orbit radii in px — relative to parent container
+      // Parent is the content div (~max-w-md = 448px wide, ~300px tall)
+      const rx = 180;
+      const ry = 140;
 
-      // Find the content element
-      const anchor = document.getElementById("content-anchor");
-      let cx: number, cy: number;
-      if (anchor) {
-        const rect = anchor.getBoundingClientRect();
-        cx = rect.left + rect.width / 2;
-        cy = rect.top + rect.height / 2;
-      } else {
-        cx = vw / 2;
-        cy = vh / 2;
-      }
+      timer--;
 
-      // Orbit radius — percentage of the SMALLER dimension to guarantee it fits
-      const minDim = Math.min(vw, vh);
-      const rx = minDim * 0.15;
-      const ry = minDim * 0.12;
-
-      timerRef.current--;
-
-      if (stateRef.current === "idle") {
-        if (timerRef.current <= 0) {
+      if (state === "idle") {
+        if (timer <= 0) {
           const jump = (Math.PI / 3) + Math.random() * (2 * Math.PI / 3);
           const dir = Math.random() > 0.5 ? 1 : -1;
-          targetAngleRef.current = angleRef.current + jump * dir;
-          stateRef.current = "walk";
-          timerRef.current = 120 + Math.random() * 200;
-          runFrameRef.current = 0;
-          tickRef.current = 0;
+          targetAngle = angle + jump * dir;
+          state = "walk";
+          timer = 120 + Math.random() * 200;
+          runFrame = 0;
+          tick = 0;
         }
       } else {
-        const diff = targetAngleRef.current - angleRef.current;
+        const diff = targetAngle - angle;
         const step = 0.015 + Math.random() * 0.005;
 
         if (Math.abs(diff) < step) {
-          angleRef.current = targetAngleRef.current;
-          stateRef.current = "idle";
-          timerRef.current = 60 + Math.random() * 120;
+          angle = targetAngle;
+          state = "idle";
+          timer = 60 + Math.random() * 120;
         } else {
-          angleRef.current += Math.sign(diff) * step;
+          angle += Math.sign(diff) * step;
         }
 
-        tickRef.current++;
-        if (tickRef.current >= 4) {
-          tickRef.current = 0;
-          runFrameRef.current = (runFrameRef.current + 1) % 4;
+        tick++;
+        if (tick >= 4) {
+          tick = 0;
+          runFrame = (runFrame + 1) % 4;
         }
       }
 
-      // Position on orbit, clamped to viewport
-      let px = cx + Math.cos(angleRef.current) * rx - size / 2;
-      let py = cy + Math.sin(angleRef.current) * ry - size / 2;
-      px = Math.max(0, Math.min(px, vw - size));
-      py = Math.max(0, Math.min(py, vh - size));
+      // Position relative to center of parent (0,0 = center of content div)
+      const px = Math.cos(angle) * rx;
+      const py = Math.sin(angle) * ry;
 
-      const isMovingRight = px > prevXRef.current;
-      prevXRef.current = px;
-      const flip = stateRef.current === "walk" ? (isMovingRight ? 1 : -1) : (prevXRef.current > cx ? 1 : -1);
+      const isMovingRight = px > prevX;
+      prevX = px;
+      const flip = state === "walk" ? (isMovingRight ? 1 : -1) : 1;
 
-      if (elRef.current) {
-        elRef.current.style.transform = `translate(${px}px, ${py}px)`;
-        elRef.current.style.width = `${size}px`;
-        elRef.current.style.height = `${size}px`;
+      // Transform relative to center (the div is already centered via CSS)
+      el.style.transform = `translate(${px}px, ${py}px)`;
+
+      if (state === "walk") {
+        const f = runStyles[runFrame];
+        img.style.transform = `scaleX(${flip * f.sx}) scaleY(${f.sy}) rotate(${f.rotate}deg) translateY(${f.ty}px)`;
+      } else {
+        const bob = Math.sin(ts / 600) * 4;
+        const tilt = Math.sin(ts / 1200) * 1.5;
+        img.style.transform = `scaleX(${flip}) translateY(${bob}px) rotate(${tilt}deg)`;
       }
 
-      if (imgRef.current) {
-        if (stateRef.current === "walk") {
-          const f = runStyles[runFrameRef.current];
-          imgRef.current.style.transform = `scaleX(${flip * f.sx}) scaleY(${f.sy}) rotate(${f.rotate}deg) translateY(${f.ty}px)`;
-        } else {
-          const bob = Math.sin(ts / 600) * 4;
-          const tilt = Math.sin(ts / 1200) * 1.5;
-          imgRef.current.style.transform = `scaleX(${flip}) translateY(${bob}px) rotate(${tilt}deg)`;
-        }
-      }
-
-      if (shadowRef.current) {
-        if (stateRef.current === "walk") {
-          const pulse = 0.6 + Math.abs(Math.sin(runFrameRef.current * 0.8)) * 0.4;
-          shadowRef.current.style.transform = `translateX(-50%) scaleX(${pulse})`;
-          shadowRef.current.style.opacity = "0.25";
-        } else {
-          const breathe = 0.8 + Math.sin(ts / 600) * 0.2;
-          shadowRef.current.style.transform = `translateX(-50%) scaleX(${breathe})`;
-          shadowRef.current.style.opacity = "0.15";
-        }
+      if (state === "walk") {
+        const pulse = 0.6 + Math.abs(Math.sin(runFrame * 0.8)) * 0.4;
+        shadow.style.transform = `translateX(-50%) scaleX(${pulse})`;
+        shadow.style.opacity = "0.25";
+      } else {
+        const breathe = 0.8 + Math.sin(ts / 600) * 0.2;
+        shadow.style.transform = `translateX(-50%) scaleX(${breathe})`;
+        shadow.style.opacity = "0.15";
       }
     };
 
@@ -138,28 +107,27 @@ export default function MomoSprite() {
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
-  if (!mounted) return null;
-  const size = getSize();
-
   return (
-    <div
-      ref={elRef}
-      className="fixed z-30 pointer-events-none"
-      style={{ width: size, height: size, willChange: "transform" }}
-    >
+    <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none">
       <div
-        ref={shadowRef}
-        className="absolute bottom-0 left-1/2 rounded-full bg-black/25 blur-md"
-        style={{ width: size * 0.5, height: size * 0.06, transition: "transform 0.1s, opacity 0.1s" }}
-      />
-      <img
-        ref={imgRef}
-        src="/momo-large.png"
-        alt="Momo"
-        className="w-full h-full object-contain"
-        style={{ imageRendering: "pixelated", willChange: "transform", transition: "transform 0.08s ease" }}
-        draggable={false}
-      />
+        ref={elRef}
+        className="relative"
+        style={{ width: 100, height: 100, willChange: "transform" }}
+      >
+        <div
+          ref={shadowRef}
+          className="absolute bottom-0 left-1/2 rounded-full bg-black/25 blur-md"
+          style={{ width: 50, height: 6, transition: "transform 0.1s, opacity 0.1s" }}
+        />
+        <img
+          ref={imgRef}
+          src="/momo-large.png"
+          alt="Momo"
+          className="w-full h-full object-contain"
+          style={{ imageRendering: "pixelated", willChange: "transform", transition: "transform 0.08s ease" }}
+          draggable={false}
+        />
+      </div>
     </div>
   );
 }
