@@ -1,78 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 
-function MomoSprite() {
-  const ref = useRef<HTMLImageElement>(null);
-  const pos = useRef({ x: 200, y: 300, vx: 1.5, vy: 1 });
-  const [style, setStyle] = useState<React.CSSProperties>({});
-  const [flipped, setFlipped] = useState(false);
-
-  useEffect(() => {
-    let raf: number;
-    const bounce = () => {
-      const p = pos.current;
-      const w = window.innerWidth - 64;
-      const h = window.innerHeight - 64;
-
-      p.x += p.vx;
-      p.y += p.vy;
-
-      if (p.x <= 0 || p.x >= w) {
-        p.vx *= -1;
-        p.x = Math.max(0, Math.min(w, p.x));
-      }
-      if (p.y <= 0 || p.y >= h) {
-        p.vy *= -1;
-        p.y = Math.max(0, Math.min(h, p.y));
-      }
-
-      // Random direction change
-      if (Math.random() < 0.005) {
-        p.vx = (Math.random() - 0.5) * 3;
-        p.vy = (Math.random() - 0.5) * 3;
-      }
-
-      setFlipped(p.vx < 0);
-      setStyle({
-        position: "fixed",
-        left: p.x,
-        top: p.y,
-        transition: "none",
-      });
-      raf = requestAnimationFrame(bounce);
-    };
-
-    // Init position randomly
-    pos.current.x = Math.random() * (window.innerWidth - 64);
-    pos.current.y = Math.random() * (window.innerHeight - 64);
-    raf = requestAnimationFrame(bounce);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
-  return (
-    <img
-      ref={ref}
-      src="/momo-sprite.png"
-      alt="Momo"
-      width={64}
-      height={64}
-      style={{
-        ...style,
-        transform: flipped ? "scaleX(-1)" : "scaleX(1)",
-        imageRendering: "pixelated",
-        zIndex: 10,
-        pointerEvents: "none",
-      }}
-      className="animate-bounce-subtle"
-    />
-  );
-}
+const MomoCanvas = dynamic(() => import("./MomoCanvas"), { ssr: false });
 
 export default function Home() {
   return (
     <main className="relative h-screen w-screen flex items-center justify-center select-none">
-      <MomoSprite />
+      <MomoCanvas />
 
       <div className="text-center z-20 relative">
         <h1 className="text-6xl font-bold tracking-tight mb-3 text-white">
