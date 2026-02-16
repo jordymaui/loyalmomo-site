@@ -38,14 +38,14 @@ export default function MomoSprite() {
   // Pick targets near the center of the screen — within 30% margins
   const pickDirection = useCallback((pos: Position) => {
     const size = sizeRef.current;
-    const marginX = window.innerWidth * 0.15;
-    const marginY = window.innerHeight * 0.2;
     const centerX = window.innerWidth / 2;
     const centerY = window.innerHeight / 2;
 
-    // Target somewhere in the middle band
-    const targetX = centerX + (Math.random() - 0.5) * (window.innerWidth - marginX * 2 - size);
-    const targetY = centerY + (Math.random() - 0.5) * (window.innerHeight - marginY * 2 - size);
+    // Keep Momo in a tight zone around the centre — max 250px from centre on each axis
+    const rangeX = Math.min(250, (window.innerWidth - size) / 2 - 20);
+    const rangeY = Math.min(200, (window.innerHeight - size) / 2 - 20);
+    const targetX = centerX - size / 2 + (Math.random() - 0.5) * rangeX * 2;
+    const targetY = centerY - size / 2 + (Math.random() - 0.5) * rangeY * 2;
 
     const dx = targetX - pos.x;
     const dy = targetY - pos.y;
@@ -98,13 +98,18 @@ export default function MomoSprite() {
         pos.x += pos.vx;
         pos.y += pos.vy;
 
-        // Soft bounds
-        const maxX = window.innerWidth - size;
-        const maxY = window.innerHeight - size;
-        if (pos.x < 0) { pos.x = 0; pickDirection(pos); return; }
-        if (pos.x > maxX) { pos.x = maxX; pickDirection(pos); return; }
-        if (pos.y < 0) { pos.y = 0; pickDirection(pos); return; }
-        if (pos.y > maxY) { pos.y = maxY; pickDirection(pos); return; }
+        // Hard clamp — never leave viewport
+        const pad = 10;
+        const maxX = window.innerWidth - size - pad;
+        const maxY = window.innerHeight - size - pad;
+        pos.x = Math.max(pad, Math.min(pos.x, maxX));
+        pos.y = Math.max(pad, Math.min(pos.y, maxY));
+        
+        // If somehow near edge, redirect to centre
+        if (pos.x <= pad || pos.x >= maxX || pos.y <= pad || pos.y >= maxY) {
+          pickDirection(pos);
+          return;
+        }
 
         // Cycle run frames every 4 ticks (~8fps)
         pos.frameTick++;
