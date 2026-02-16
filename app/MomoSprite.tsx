@@ -2,6 +2,257 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 
+// === PIXEL ART DATA ===
+// Each frame is a 48x32 grid. We use a palette index approach.
+// 0=transparent, 1=black(outline), 2=cream, 3=brown, 4=dark brown, 5=green, 6=pink, 7=light brown, 8=white highlight
+
+const PALETTE: Record<number, string> = {
+  0: "", // transparent
+  1: "#1A1A1A", // black / outline
+  2: "#F5F0E1", // cream/white body
+  3: "#8B6914", // brown
+  4: "#5C4A1E", // dark brown
+  5: "#4CAF50", // green eyes
+  6: "#E8B4B8", // pink ear inner
+  7: "#C4A44A", // light brown
+  8: "#FFFFFF", // white highlight
+};
+
+// Helper to create frame data from a compact string representation
+// Each character maps to a palette index
+function parseFrame(rows: string[]): number[][] {
+  return rows.map((row) =>
+    row.split("").map((c) => {
+      const n = parseInt(c, 16);
+      return isNaN(n) ? 0 : n;
+    })
+  );
+}
+
+// Frame 1: Full stretch — front legs forward, back legs back, body elongated, tail streaming behind
+// Momo running LEFT (facing right when flipped). Side view, stretched out.
+const FRAME_1 = parseFrame([
+  //0         1         2         3         4
+  //0123456789012345678901234567890123456789012345678
+  "000000000000000000000000000000000000000000000000",// 0
+  "000000000000000000000000000000001100000000000000",// 1
+  "000000000000000000000000000000012210000000000000",// 2
+  "000000000000000000000000000000122210000000000000",// 3
+  "000000000000000000000000000001222100000000000000",// 4
+  "000000000000000000000000000012221000000000000000",// 5
+  "000000000000000000001100000012210000000000000000",// 6
+  "000000000000000000012610000122100000000000000000",// 7
+  "000000000000000000126610001221000000000000000000",// 8
+  "000000000000000001266100012210000000000000000000",// 9
+  "000000000000000012661000012100000000000000000000",//10
+  "000000000000000012610000121000011221100000000000",//11
+  "000000000000000012100001210000124441210000000000",//12
+  "000000000000000001210012100001245541210000000000",//13
+  "000000000000000000121121000012244412100000000000",//14
+  "000000000000000000012210000122222221000000000000",//15
+  "000000000000000000001100001222222210000000000000",//16
+  "000000000000000000000000012222222100000000000000",//17
+  "000000000000000000000000122222221000000000000000",//18
+  "000000000000000000000001222222210000000000000000",//19
+  "000000000000000000000012222222100000000000000000",//20
+  "000000000000000000000012222221000000000000000000",//21
+  "000000000000000000000001222210000000000000000000",//22
+  "000000000000000000000000122100000000000000000000",//23
+  "000000000000000000000001210121000000000000000000",//24
+  "000000000000000000000012100012100000000000000000",//25
+  "000000000000000000000121000001210000000000000000",//26
+  "000000000000000000001210000000121000000000000000",//27
+  "000000000000000000014100000000014100000000000000",//28
+  "000000000000000000013100000000013100000000000000",//29
+  "000000000000000000011100000000011100000000000000",//30
+  "000000000000000000000000000000000000000000000000",//31
+]);
+
+// Frame 2: Front legs pulling under, back legs pushing, body starting to bunch
+const FRAME_2 = parseFrame([
+  "000000000000000000000000000000000000000000000000",// 0
+  "000000000000000000000000000000110000000000000000",// 1
+  "000000000000000000000000000001221000000000000000",// 2
+  "000000000000000000000000000012221000000000000000",// 3
+  "000000000000000000000000000012210000000000000000",// 4
+  "000000000000000000000000000122100000000000000000",// 5
+  "000000000000000000011000001221000000000000000000",// 6
+  "000000000000000000126100012210000000000000000000",// 7
+  "000000000000000001266100122100000000000000000000",// 8
+  "000000000000000012661001221000000000000000000000",// 9
+  "000000000000000012610001210000000000000000000000",//10
+  "000000000000000012100012100001122110000000000000",//11
+  "000000000000000001210012100012444121000000000000",//12
+  "000000000000000000121121000124554121000000000000",//13
+  "000000000000000000012210001224441210000000000000",//14
+  "000000000000000000001100001222222100000000000000",//15
+  "000000000000000000000000012222222100000000000000",//16
+  "000000000000000000000000122222221000000000000000",//17
+  "000000000000000000000001222222210000000000000000",//18
+  "000000000000000000000012222222100000000000000000",//19
+  "000000000000000000000012222221000000000000000000",//20
+  "000000000000000000000001222210000000000000000000",//21
+  "000000000000000000000000122100000000000000000000",//22
+  "000000000000000000000000121100000000000000000000",//23
+  "000000000000000000000001211210000000000000000000",//24
+  "000000000000000000000012100121000000000000000000",//25
+  "000000000000000000000141000014100000000000000000",//26
+  "000000000000000000000131000013100000000000000000",//27
+  "000000000000000000000111000011100000000000000000",//28
+  "000000000000000000000000000000000000000000000000",//29
+  "000000000000000000000000000000000000000000000000",//30
+  "000000000000000000000000000000000000000000000000",//31
+]);
+
+// Frame 3: Bunched up — all legs underneath, body compressed, about to spring
+const FRAME_3 = parseFrame([
+  "000000000000000000000000000000000000000000000000",// 0
+  "000000000000000000000000000000000000000000000000",// 1
+  "000000000000000000000000000011000000000000000000",// 2
+  "000000000000000000000000000122100000000000000000",// 3
+  "000000000000000000000000001222100000000000000000",// 4
+  "000000000000000000000000001221000000000000000000",// 5
+  "000000000000000000000000012210000000000000000000",// 6
+  "000000000000000000011000012210000000000000000000",// 7
+  "000000000000000000126100122100000000000000000000",// 8
+  "000000000000000001266101221000000000000000000000",// 9
+  "000000000000000012661001210000000000000000000000",//10
+  "000000000000000012610012100000000000000000000000",//11
+  "000000000000000012100012100001122110000000000000",//12
+  "000000000000000001210121000012444121000000000000",//13
+  "000000000000000000121210000124554121000000000000",//14
+  "000000000000000000012100001224441210000000000000",//15
+  "000000000000000000001000001222222100000000000000",//16
+  "000000000000000000000000012222222100000000000000",//17
+  "000000000000000000000000122222221000000000000000",//18
+  "000000000000000000000001222222210000000000000000",//19
+  "000000000000000000000001222222100000000000000000",//20
+  "000000000000000000000000122221000000000000000000",//21
+  "000000000000000000000000012210000000000000000000",//22
+  "000000000000000000000000012121000000000000000000",//23
+  "000000000000000000000000121012100000000000000000",//24
+  "000000000000000000000001410014100000000000000000",//25
+  "000000000000000000000001310013100000000000000000",//26
+  "000000000000000000000001110011100000000000000000",//27
+  "000000000000000000000000000000000000000000000000",//28
+  "000000000000000000000000000000000000000000000000",//29
+  "000000000000000000000000000000000000000000000000",//30
+  "000000000000000000000000000000000000000000000000",//31
+]);
+
+// Frame 4: Back legs pushing off, front legs reaching forward, mid-leap (airborne)
+const FRAME_4 = parseFrame([
+  "000000000000000000000000000000000000000000000000",// 0
+  "000000000000000000000000000000011000000000000000",// 1
+  "000000000000000000000000000000122100000000000000",// 2
+  "000000000000000000000000000001222100000000000000",// 3
+  "000000000000000000000000000012221000000000000000",// 4
+  "000000000000000000000000000122210000000000000000",// 5
+  "000000000000000000001100001222100000000000000000",// 6
+  "000000000000000000012610001221000000000000000000",// 7
+  "000000000000000000126610012210000000000000000000",// 8
+  "000000000000000001266100122100000000000000000000",// 9
+  "000000000000000012661001221000000000000000000000",//10
+  "000000000000000012610001210000112211000000000000",//11
+  "000000000000000012100012100001244412100000000000",//12
+  "000000000000000001210121000012455412100000000000",//13
+  "000000000000000000121210000122444121000000000000",//14
+  "000000000000000000012100001222222210000000000000",//15
+  "000000000000000000001000012222222100000000000000",//16
+  "000000000000000000000000122222221000000000000000",//17
+  "000000000000000000000001222222210000000000000000",//18
+  "000000000000000000000012222222100000000000000000",//19
+  "000000000000000000000012222221000000000000000000",//20
+  "000000000000000000000001222210000000000000000000",//21
+  "000000000000000000000001221000000000000000000000",//22
+  "000000000000000000000012101210000000000000000000",//23
+  "000000000000000000000121000012100000000000000000",//24
+  "000000000000000000001210000001210000000000000000",//25
+  "000000000000000000012100000000121000000000000000",//26
+  "000000000000000000014100000000014100000000000000",//27
+  "000000000000000000013100000000013100000000000000",//28
+  "000000000000000000011100000000011100000000000000",//29
+  "000000000000000000000000000000000000000000000000",//30
+  "000000000000000000000000000000000000000000000000",//31
+]);
+
+// Idle frame: Momo sitting, facing forward-ish (side view sitting)
+const IDLE_1 = parseFrame([
+  "000000000000000000000000000000000000000000000000",// 0
+  "000000000000000000000000000000000000000000000000",// 1
+  "000000000000000001100000000011000000000000000000",// 2
+  "000000000000000012610000000126100000000000000000",// 3
+  "000000000000000126610000001266100000000000000000",// 4
+  "000000000000001266100000012661000000000000000000",// 5
+  "000000000000012661000000126610000000000000000000",// 6
+  "000000000000012610000001266100000000000000000000",// 7
+  "000000000000012100000012661000000000000000000000",// 8
+  "000000000000001210000012610000000000000000000000",// 9
+  "000000000000000121000012100000000000000000000000",//10
+  "000000000000000012112121000000000000000000000000",//11
+  "000000000000000001244421000000000000000000000000",//12
+  "000000000000000001455541000000000000000000000000",//13
+  "000000000000000001244421000000000000000000000000",//14
+  "000000000000000000122210000000000000000000000000",//15
+  "000000000000000000122210000000000000000000000000",//16
+  "000000000000000001222221000000000000000000000000",//17
+  "000000000000000012222221000000000000000000000000",//18
+  "000000000000000012222221000000001100000000000000",//19
+  "000000000000000012222210000000012100000000000000",//20
+  "000000000000000001222100000000122100000000000000",//21
+  "000000000000000001222100000001221000000000000000",//22
+  "000000000000000001222100000012210000000000000000",//23
+  "000000000000000000122100000012100000000000000000",//24
+  "000000000000000000141141000011000000000000000000",//25
+  "000000000000000000131131000000000000000000000000",//26
+  "000000000000000000111111000000000000000000000000",//27
+  "000000000000000000000000000000000000000000000000",//28
+  "000000000000000000000000000000000000000000000000",//29
+  "000000000000000000000000000000000000000000000000",//30
+  "000000000000000000000000000000000000000000000000",//31
+]);
+
+const IDLE_2 = parseFrame([
+  "000000000000000000000000000000000000000000000000",// 0
+  "000000000000000000000000000000000000000000000000",// 1
+  "000000000000000000000000000000000000000000000000",// 2
+  "000000000000000001100000000011000000000000000000",// 3
+  "000000000000000012610000000126100000000000000000",// 4
+  "000000000000000126610000001266100000000000000000",// 5
+  "000000000000001266100000012661000000000000000000",// 6
+  "000000000000012661000000126610000000000000000000",// 7
+  "000000000000012610000001266100000000000000000000",// 8
+  "000000000000012100000012661000000000000000000000",// 9
+  "000000000000001210000012610000000000000000000000",//10
+  "000000000000000121000012100000000000000000000000",//11
+  "000000000000000012112121000000000000000000000000",//12
+  "000000000000000001244421000000000000000000000000",//13
+  "000000000000000001455541000000000000000000000000",//14
+  "000000000000000001244421000000000000000000000000",//15
+  "000000000000000000122210000000000000000000000000",//16
+  "000000000000000000122210000000000000000000000000",//17
+  "000000000000000001222221000000000000000000000000",//18
+  "000000000000000012222221000000000000000000000000",//19
+  "000000000000000012222221000000011000000000000000",//20
+  "000000000000000012222210000000122100000000000000",//21
+  "000000000000000001222100000001221000000000000000",//22
+  "000000000000000001222100000012210000000000000000",//23
+  "000000000000000001222100000012100000000000000000",//24
+  "000000000000000000122100000011000000000000000000",//25
+  "000000000000000000141141000000000000000000000000",//26
+  "000000000000000000131131000000000000000000000000",//27
+  "000000000000000000111111000000000000000000000000",//28
+  "000000000000000000000000000000000000000000000000",//29
+  "000000000000000000000000000000000000000000000000",//30
+  "000000000000000000000000000000000000000000000000",//31
+]);
+
+const RUN_FRAMES = [FRAME_1, FRAME_2, FRAME_3, FRAME_4];
+const IDLE_FRAMES = [IDLE_1, IDLE_2];
+
+const SPRITE_W = 48;
+const SPRITE_H = 32;
+
 interface Position {
   x: number;
   y: number;
@@ -12,42 +263,62 @@ interface Position {
   stateTimer: number;
   runFrame: number;
   frameTick: number;
+  idleFrame: number;
+  idleTick: number;
+}
+
+function renderFrame(
+  ctx: CanvasRenderingContext2D,
+  frame: number[][],
+  scale: number
+) {
+  ctx.clearRect(0, 0, SPRITE_W * scale, SPRITE_H * scale);
+  for (let y = 0; y < SPRITE_H; y++) {
+    for (let x = 0; x < SPRITE_W; x++) {
+      const idx = frame[y]?.[x] ?? 0;
+      if (idx === 0) continue;
+      const color = PALETTE[idx];
+      if (!color) continue;
+      ctx.fillStyle = color;
+      ctx.fillRect(x * scale, y * scale, scale, scale);
+    }
+  }
 }
 
 export default function MomoSprite() {
   const posRef = useRef<Position>({
     x: 0, y: 0, vx: 0, vy: 0,
     facingRight: true, state: "idle", stateTimer: 120,
-    runFrame: 0, frameTick: 0,
+    runFrame: 0, frameTick: 0, idleFrame: 0, idleTick: 0,
   });
   const rafRef = useRef<number>(0);
-  const elRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const shadowRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
 
-  // Responsive size
-  const getSize = () => {
-    if (typeof window === "undefined") return 160;
-    if (window.innerWidth < 480) return 80;
-    if (window.innerWidth < 768) return 120;
-    return 160;
+  const getScale = () => {
+    if (typeof window === "undefined") return 3;
+    if (window.innerWidth < 480) return 2;
+    if (window.innerWidth < 768) return 2;
+    return 3;
   };
 
-  const sizeRef = useRef(getSize());
+  const scaleRef = useRef(getScale());
 
-  // Pick a target in the middle ~60% of the screen
   const pickDirection = useCallback((pos: Position) => {
-    const size = sizeRef.current;
+    const scale = scaleRef.current;
+    const w = SPRITE_W * scale;
+    const h = SPRITE_H * scale;
     const marginX = window.innerWidth * 0.2;
     const marginY = window.innerHeight * 0.2;
-    const targetX = marginX + Math.random() * (window.innerWidth - marginX * 2 - size);
-    const targetY = marginY + Math.random() * (window.innerHeight - marginY * 2 - size);
+    const targetX = marginX + Math.random() * (window.innerWidth - marginX * 2 - w);
+    const targetY = marginY + Math.random() * (window.innerHeight - marginY * 2 - h);
 
     const dx = targetX - pos.x;
     const dy = targetY - pos.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
-    const speed = 1.0 + Math.random() * 1.5;
+    const speed = 1.2 + Math.random() * 1.8;
 
     if (dist > 0) {
       pos.vx = (dx / dist) * speed;
@@ -62,54 +333,48 @@ export default function MomoSprite() {
 
   useEffect(() => {
     const pos = posRef.current;
-    const size = sizeRef.current;
+    const scale = scaleRef.current;
+    const w = SPRITE_W * scale;
+    const h = SPRITE_H * scale;
 
-    // Start in middle area
     const marginX = window.innerWidth * 0.25;
     const marginY = window.innerHeight * 0.25;
-    pos.x = marginX + Math.random() * (window.innerWidth - marginX * 2 - size);
-    pos.y = marginY + Math.random() * (window.innerHeight - marginY * 2 - size);
+    pos.x = marginX + Math.random() * (window.innerWidth - marginX * 2 - w);
+    pos.y = marginY + Math.random() * (window.innerHeight - marginY * 2 - h);
     setMounted(true);
 
-    const handleResize = () => { sizeRef.current = getSize(); };
+    const handleResize = () => { scaleRef.current = getScale(); };
     window.addEventListener("resize", handleResize);
 
     let lastTime = 0;
     const FRAME_MS = 1000 / 30;
-
-    // Run animation: 3 keyframes cycling
-    // Frame 0: normal, Frame 1: slight tilt + squash, Frame 2: opposite tilt + stretch
-    const runStyles = [
-      { rotate: 0, scaleX: 1, scaleY: 1, translateY: 0 },
-      { rotate: -8, scaleX: 1.05, scaleY: 0.92, translateY: 2 },
-      { rotate: 8, scaleX: 0.95, scaleY: 1.06, translateY: -4 },
-    ];
 
     const loop = (ts: number) => {
       rafRef.current = requestAnimationFrame(loop);
       if (ts - lastTime < FRAME_MS) return;
       lastTime = ts - ((ts - lastTime) % FRAME_MS);
 
-      const size = sizeRef.current;
+      const scale = scaleRef.current;
+      const w = SPRITE_W * scale;
+      const h = SPRITE_H * scale;
       pos.stateTimer--;
 
       if (pos.state === "walk") {
         pos.x += pos.vx;
         pos.y += pos.vy;
 
-        // Soft bounds — keep in middle area mostly
-        const maxX = window.innerWidth - size;
-        const maxY = window.innerHeight - size;
+        const maxX = window.innerWidth - w;
+        const maxY = window.innerHeight - h;
         if (pos.x < 0) { pos.x = 0; pickDirection(pos); }
         if (pos.x > maxX) { pos.x = maxX; pickDirection(pos); }
         if (pos.y < 0) { pos.y = 0; pickDirection(pos); }
         if (pos.y > maxY) { pos.y = maxY; pickDirection(pos); }
 
-        // Cycle run frames every 5 ticks
+        // Cycle run frames at ~8fps (every ~4 ticks at 30fps)
         pos.frameTick++;
-        if (pos.frameTick >= 5) {
+        if (pos.frameTick >= 4) {
           pos.frameTick = 0;
-          pos.runFrame = (pos.runFrame + 1) % 3;
+          pos.runFrame = (pos.runFrame + 1) % 4;
         }
 
         if (pos.stateTimer <= 0) {
@@ -118,40 +383,52 @@ export default function MomoSprite() {
           pos.vx = 0;
           pos.vy = 0;
           pos.runFrame = 0;
+          pos.idleFrame = 0;
+          pos.idleTick = 0;
         }
       } else {
-        // Idle bob
-        pos.runFrame = 0;
+        // Idle breathing animation ~2fps
+        pos.idleTick++;
+        if (pos.idleTick >= 15) {
+          pos.idleTick = 0;
+          pos.idleFrame = (pos.idleFrame + 1) % 2;
+        }
         if (pos.stateTimer <= 0) pickDirection(pos);
       }
 
-      // Apply position
-      if (elRef.current) {
-        elRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px) scaleX(${pos.facingRight ? 1 : -1})`;
-        elRef.current.style.width = `${size}px`;
-        elRef.current.style.height = `${size}px`;
-      }
-
-      // Apply run animation to sprite
-      if (imgRef.current) {
-        if (pos.state === "walk") {
-          const f = runStyles[pos.runFrame];
-          imgRef.current.style.transform = `rotate(${f.rotate}deg) scaleX(${f.scaleX}) scaleY(${f.scaleY}) translateY(${f.translateY}px)`;
-          imgRef.current.style.animation = "none";
-        } else {
-          // Idle: gentle bob
-          imgRef.current.style.transform = "";
-          imgRef.current.style.animation = "momoBob 2s ease-in-out infinite";
+      // Render sprite on canvas
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.imageSmoothingEnabled = false;
+          if (pos.state === "walk") {
+            renderFrame(ctx, RUN_FRAMES[pos.runFrame], scale);
+          } else {
+            renderFrame(ctx, IDLE_FRAMES[pos.idleFrame], scale);
+          }
         }
       }
 
-      // Shadow responds to state
+      // Position container
+      if (containerRef.current) {
+        const flipX = pos.facingRight ? 1 : -1;
+        containerRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px) scaleX(${flipX})`;
+        containerRef.current.style.width = `${w}px`;
+        containerRef.current.style.height = `${h}px`;
+      }
+
+      // Shadow
       if (shadowRef.current) {
+        const sw = w * 0.5;
+        const sh = h * 0.12;
+        shadowRef.current.style.width = `${sw}px`;
+        shadowRef.current.style.height = `${sh}px`;
         if (pos.state === "walk") {
-          shadowRef.current.style.transform = `translateX(-50%) scaleX(${0.7 + pos.runFrame * 0.1})`;
-          shadowRef.current.style.opacity = "0.3";
+          shadowRef.current.style.opacity = "0.25";
         } else {
-          shadowRef.current.style.transform = "translateX(-50%) scaleX(1)";
           shadowRef.current.style.opacity = "0.15";
         }
       }
@@ -166,29 +443,26 @@ export default function MomoSprite() {
 
   if (!mounted) return null;
 
-  const size = sizeRef.current;
+  const scale = scaleRef.current;
+  const w = SPRITE_W * scale;
+  const h = SPRITE_H * scale;
 
   return (
     <div
-      ref={elRef}
+      ref={containerRef}
       className="fixed z-10 pointer-events-none"
-      style={{ width: size, height: size, willChange: "transform" }}
+      style={{ width: w, height: h, willChange: "transform" }}
     >
-      {/* Shadow */}
       <div
         ref={shadowRef}
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full bg-black/20 blur-sm transition-all duration-150"
-        style={{ width: size * 0.5, height: size * 0.08 }}
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full bg-black/20 blur-sm"
+        style={{ width: w * 0.5, height: h * 0.12 }}
       />
-
-      {/* Momo sprite */}
-      <img
-        ref={imgRef}
-        src="/momo-large.png"
-        alt="Momo"
-        className="w-full h-full object-contain"
-        style={{ imageRendering: "pixelated", willChange: "transform" }}
-        draggable={false}
+      <canvas
+        ref={canvasRef}
+        width={w}
+        height={h}
+        style={{ imageRendering: "pixelated", width: w, height: h }}
       />
     </div>
   );
