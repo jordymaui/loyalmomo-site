@@ -9,7 +9,7 @@ export default function Home() {
     <main className="relative min-h-[100dvh] w-screen flex items-center justify-center select-none overflow-hidden bg-[#0a0a0a] px-4">
       <MomoSprite />
 
-      <div className="text-center z-20 relative max-w-md w-full">
+      <div id="content-anchor" className="text-center z-20 relative max-w-md w-full">
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-3 sm:mb-4 text-white">
           Momo
         </h1>
