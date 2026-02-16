@@ -34,7 +34,7 @@ export default function Home() {
           className="inline-flex items-center gap-3 sm:gap-4 bg-white/5 border border-white/10 rounded-2xl px-4 sm:px-5 py-3 sm:py-4 hover:bg-white/10 transition-all group"
         >
           <img
-            src="/momo-sprite.png"
+            src="/momo-pfp.webp"
             alt="Momo"
             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-neutral-800 object-cover"
           />
