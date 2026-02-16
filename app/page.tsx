@@ -2,15 +2,15 @@
 
 import dynamic from "next/dynamic";
 
-const MomoCanvas = dynamic(() => import("./MomoCanvas"), { ssr: false });
+const MomoSprite = dynamic(() => import("./MomoSprite"), { ssr: false });
 
 export default function Home() {
   return (
-    <main className="relative h-screen w-screen flex items-center justify-center select-none">
-      <MomoCanvas />
+    <main className="relative min-h-screen w-screen flex items-center justify-center select-none overflow-hidden bg-[#0a0a0a]">
+      <MomoSprite />
 
       <div className="text-center z-20 relative">
-        <h1 className="text-6xl font-bold tracking-tight mb-3 text-white">
+        <h1 className="text-7xl font-bold tracking-tight mb-3 text-white">
           Momo
         </h1>
         <p className="text-lg text-neutral-400 mb-6">
