@@ -9,19 +9,19 @@ export default function MomoSprite() {
   const shadowRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
 
-  const angleRef = useRef(-Math.PI / 2); // start at top
+  const angleRef = useRef(-Math.PI / 2);
   const targetAngleRef = useRef(-Math.PI / 2);
   const stateRef = useRef<"walk" | "idle">("idle");
-  const timerRef = useRef(90); // longer initial idle so you see him above text
+  const timerRef = useRef(90);
   const runFrameRef = useRef(0);
   const tickRef = useRef(0);
   const prevXRef = useRef(0);
 
   const getSize = () => {
-    if (typeof window === "undefined") return 120;
-    if (window.innerWidth < 480) return 70;
-    if (window.innerWidth < 768) return 90;
-    return 120;
+    if (typeof window === "undefined") return 100;
+    if (window.innerWidth < 480) return 60;
+    if (window.innerWidth < 768) return 80;
+    return 100;
   };
 
   useEffect(() => {
@@ -43,8 +43,10 @@ export default function MomoSprite() {
       lastTime = ts - ((ts - lastTime) % FRAME_MS);
 
       const size = getSize();
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
 
-      // Find the content element and orbit around its centre
+      // Find the content element
       const anchor = document.getElementById("content-anchor");
       let cx: number, cy: number;
       if (anchor) {
@@ -52,15 +54,14 @@ export default function MomoSprite() {
         cx = rect.left + rect.width / 2;
         cy = rect.top + rect.height / 2;
       } else {
-        cx = window.innerWidth / 2;
-        cy = window.innerHeight / 2;
+        cx = vw / 2;
+        cy = vh / 2;
       }
 
-      // Tight orbit — sized relative to viewport, never bigger than needed
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const rx = Math.min(160, vw * 0.12);
-      const ry = Math.min(120, vh * 0.12);
+      // Orbit radius — percentage of the SMALLER dimension to guarantee it fits
+      const minDim = Math.min(vw, vh);
+      const rx = minDim * 0.15;
+      const ry = minDim * 0.12;
 
       timerRef.current--;
 
@@ -93,16 +94,15 @@ export default function MomoSprite() {
         }
       }
 
-      // Position on the orbit — clamped to viewport
+      // Position on orbit, clamped to viewport
       let px = cx + Math.cos(angleRef.current) * rx - size / 2;
       let py = cy + Math.sin(angleRef.current) * ry - size / 2;
       px = Math.max(0, Math.min(px, vw - size));
       py = Math.max(0, Math.min(py, vh - size));
 
-      // Face the direction of horizontal movement
       const isMovingRight = px > prevXRef.current;
       prevXRef.current = px;
-      const flip = isMovingRight ? 1 : -1;
+      const flip = stateRef.current === "walk" ? (isMovingRight ? 1 : -1) : (prevXRef.current > cx ? 1 : -1);
 
       if (elRef.current) {
         elRef.current.style.transform = `translate(${px}px, ${py}px)`;
@@ -139,7 +139,6 @@ export default function MomoSprite() {
   }, []);
 
   if (!mounted) return null;
-
   const size = getSize();
 
   return (
