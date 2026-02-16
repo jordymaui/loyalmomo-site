@@ -18,10 +18,10 @@ export default function MomoSprite() {
   const prevXRef = useRef(0);
 
   const getSize = () => {
-    if (typeof window === "undefined") return 150;
-    if (window.innerWidth < 480) return 90;
-    if (window.innerWidth < 768) return 120;
-    return 150;
+    if (typeof window === "undefined") return 120;
+    if (window.innerWidth < 480) return 70;
+    if (window.innerWidth < 768) return 90;
+    return 120;
   };
 
   useEffect(() => {
@@ -56,9 +56,11 @@ export default function MomoSprite() {
         cy = window.innerHeight / 2;
       }
 
-      // Tight orbit — just big enough to go around the text block
-      const rx = Math.min(200, window.innerWidth * 0.18);
-      const ry = Math.min(140, window.innerHeight * 0.16);
+      // Tight orbit — sized relative to viewport, never bigger than needed
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const rx = Math.min(160, vw * 0.12);
+      const ry = Math.min(120, vh * 0.12);
 
       timerRef.current--;
 
@@ -91,9 +93,11 @@ export default function MomoSprite() {
         }
       }
 
-      // Position on the orbit
-      const px = cx + Math.cos(angleRef.current) * rx - size / 2;
-      const py = cy + Math.sin(angleRef.current) * ry - size / 2;
+      // Position on the orbit — clamped to viewport
+      let px = cx + Math.cos(angleRef.current) * rx - size / 2;
+      let py = cy + Math.sin(angleRef.current) * ry - size / 2;
+      px = Math.max(0, Math.min(px, vw - size));
+      py = Math.max(0, Math.min(py, vh - size));
 
       // Face the direction of horizontal movement
       const isMovingRight = px > prevXRef.current;
