@@ -8,14 +8,14 @@ export const metadata: Metadata = {
 
 const links = [
   {
-    title: "Momo Community (pump.fun)",
-    description: "The growing $MOMO community. Join the conversation.",
+    title: "Momo Community",
+    description: "The growing Momo community. Join the conversation.",
     href: "https://x.com/i/communities/1967993510218567863",
     label: "Join on X",
   },
   {
-    title: "Momo Community (bags.fm)",
-    description: "The original Momo community. Updates, builds, and alpha.",
+    title: "Momo Builders",
+    description: "Updates, builds, and alpha from Momo HQ.",
     href: "https://x.com/i/communities/2023500216549204280",
     label: "Join on X",
   },
