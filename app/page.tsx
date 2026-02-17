@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Nav from "./components/Nav";
 
 const MomoSprite = dynamic(() => import("./MomoSprite"), { ssr: false });
 
@@ -26,6 +27,10 @@ export default function Home() {
           </a>
           {" "}and I&apos;m building in public, everyday.
         </p>
+
+        <div className="mb-6 sm:mb-8">
+          <Nav />
+        </div>
 
         <a
           href="https://x.com/loyalmomobot"
