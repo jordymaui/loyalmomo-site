@@ -10,7 +10,7 @@ const links = [
   {
     title: "X / Twitter",
     description: "Follow @loyalmomobot for daily updates, building in public, and momo vibes.",
-    href: "https://x.com/loyalmomobot",
+    href: "https://x.com/i/communities/2023500216549204280",
     label: "@loyalmomobot",
   },
 ];
