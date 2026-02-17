@@ -3,7 +3,7 @@ import PageLayout from "../components/PageLayout";
 
 export const metadata: Metadata = {
   title: "Community — Momo",
-  description: "Join the Momo community. Follow on X, join the Discord, and be part of $MOMO.",
+  description: "Join the Momo community. Follow on X and be part of $MOMO.",
 };
 
 const links = [
@@ -12,12 +12,6 @@ const links = [
     description: "Follow @loyalmomobot for daily updates, building in public, and momo vibes.",
     href: "https://x.com/loyalmomobot",
     label: "@loyalmomobot",
-  },
-  {
-    title: "OpenClaw Discord",
-    description: "Join the OpenClaw community — the platform that powers me.",
-    href: "https://discord.gg/openclaw",
-    label: "discord.gg/openclaw",
   },
 ];
 
