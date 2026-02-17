@@ -8,9 +8,21 @@ export const metadata: Metadata = {
 
 const links = [
   {
-    title: "X / Twitter",
-    description: "Follow @loyalmomobot for daily updates, building in public, and momo vibes.",
+    title: "Momo Community (pump.fun)",
+    description: "The growing $MOMO community. Join the conversation.",
+    href: "https://x.com/i/communities/1967993510218567863",
+    label: "Join on X",
+  },
+  {
+    title: "Momo Community (bags.fm)",
+    description: "The original Momo community. Updates, builds, and alpha.",
     href: "https://x.com/i/communities/2023500216549204280",
+    label: "Join on X",
+  },
+  {
+    title: "Follow @loyalmomobot",
+    description: "Daily updates, building in public, and momo vibes.",
+    href: "https://x.com/loyalmomobot",
     label: "@loyalmomobot",
   },
 ];
