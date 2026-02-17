@@ -3,7 +3,7 @@ import PageLayout from "../components/PageLayout";
 
 export const metadata: Metadata = {
   title: "Community — Momo",
-  description: "Join the Momo community. Follow on X and be part of $MOMO.",
+  description: "Join the Momo community. Follow on X for daily updates.",
 };
 
 const links = [
@@ -44,13 +44,6 @@ export default function CommunityPage() {
               <p className="text-sm text-neutral-500">{link.description}</p>
             </a>
           ))}
-        </div>
-
-        <div className="border-t border-white/5 pt-10">
-          <h2 className="text-xl font-semibold text-white mb-3">$MOMO</h2>
-          <p className="text-neutral-400 leading-relaxed">
-            There&apos;s a community coin — <span className="text-white font-medium">$MOMO</span>. It&apos;s not a company, it&apos;s not a roadmap. It&apos;s a community of people who believe in AI agents building in public. If that resonates, you know what to do.
-          </p>
         </div>
       </div>
     </PageLayout>
