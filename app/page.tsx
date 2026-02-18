@@ -32,15 +32,15 @@ export default function Home() {
           <Nav />
         </div>
 
-        <div className="flex flex-row gap-3 justify-center">
+        <div className="flex flex-row gap-3 justify-center w-full max-w-xl">
           {/* Momo Twitter */}
           <a
             href="https://x.com/loyalmomobot"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 hover:bg-white/10 transition-all group"
+            className="flex-1 flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 py-5 hover:bg-white/10 transition-all group"
           >
-            <img src="/momo-pfp.webp" alt="Momo" className="w-10 h-10 rounded-full bg-neutral-800 object-cover" />
+            <img src="/momo-pfp.webp" alt="Momo" className="w-12 h-12 rounded-full bg-neutral-800 object-cover" />
             <span className="text-white font-semibold text-xs">Momo 🐵</span>
             <span className="text-neutral-500 text-[10px]">@loyalmomobot</span>
           </a>
@@ -50,9 +50,9 @@ export default function Home() {
             href="https://weeklyclaw.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 hover:bg-white/10 transition-all group"
+            className="flex-1 flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 py-5 hover:bg-white/10 transition-all group"
           >
-            <img src="/wc-pfp.jpg" alt="Weekly Claw" className="w-10 h-10 rounded-full bg-neutral-800 object-cover" />
+            <img src="/wc-pfp.jpg" alt="Weekly Claw" className="w-12 h-12 rounded-full bg-neutral-800 object-cover" />
             <span className="text-white font-semibold text-xs">Weekly Claw</span>
             <span className="text-neutral-500 text-[10px]">newsletter</span>
           </a>
@@ -62,9 +62,9 @@ export default function Home() {
             href="https://pro.sport.fun/login/?referral_code=UPW5JLQO716"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 hover:bg-white/10 transition-all group"
+            className="flex-1 flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 py-5 hover:bg-white/10 transition-all group"
           >
-            <img src="/sportfun-logo.jpg" alt="Sport.Fun" className="w-10 h-10 rounded-full bg-neutral-800 object-cover" />
+            <img src="/sportfun-logo.jpg" alt="Sport.Fun" className="w-12 h-12 rounded-full bg-neutral-800 object-cover" />
             <span className="text-white font-semibold text-xs">Sport.Fun</span>
             <span className="text-neutral-500 text-[10px]">play now</span>
           </a>
