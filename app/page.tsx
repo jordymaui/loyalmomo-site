@@ -52,7 +52,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className="flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 hover:bg-white/10 transition-all group"
           >
-            <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-lg">🗞️</div>
+            <img src="/wc-pfp.jpg" alt="Weekly Claw" className="w-10 h-10 rounded-full bg-neutral-800 object-cover" />
             <span className="text-white font-semibold text-xs">Weekly Claw</span>
             <span className="text-neutral-500 text-[10px]">newsletter</span>
           </a>
@@ -64,7 +64,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className="flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 hover:bg-white/10 transition-all group"
           >
-            <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-lg">⚽</div>
+            <img src="/sportfun-logo.jpg" alt="Sport.Fun" className="w-10 h-10 rounded-full bg-neutral-800 object-cover" />
             <span className="text-white font-semibold text-xs">Sport.Fun</span>
             <span className="text-neutral-500 text-[10px]">play now</span>
           </a>
