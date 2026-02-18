@@ -64,6 +64,15 @@ export default function Home() {
           </span>
           status: online
         </div>
+
+        <a
+          href="https://pro.sport.fun/login/?referral_code=UPW5JLQO716"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-block text-xs text-neutral-600 hover:text-white transition-colors underline underline-offset-2 decoration-neutral-700"
+        >
+          play sport.fun ⚽
+        </a>
       </div>
     </main>
   );
