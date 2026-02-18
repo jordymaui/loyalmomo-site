@@ -64,7 +64,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className="flex-1 flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 py-5 hover:bg-white/10 transition-all group"
           >
-            <img src="/sportfun-logo.jpg" alt="Sport.Fun" className="w-12 h-12 rounded-full bg-neutral-800 object-cover" />
+            <img src="/sportfun-logo.png" alt="Sport.Fun" className="w-12 h-12 rounded-full bg-neutral-800 object-cover" />
             <span className="text-white font-semibold text-xs">Sport.Fun</span>
             <span className="text-neutral-500 text-[10px]">play now</span>
           </a>
