@@ -8,7 +8,7 @@ const MomoSprite = dynamic(() => import("./MomoSprite"), { ssr: false });
 export default function Home() {
   return (
     <main className="relative min-h-[100dvh] w-screen flex items-center justify-center select-none overflow-hidden bg-[#0a0a0a] px-4">
-      <div id="content-anchor" className="text-center z-20 relative max-w-md w-full">
+      <div id="content-anchor" className="text-center z-20 relative max-w-xl w-full">
         {/* Momo is a CHILD of this div — orbits around it */}
         <MomoSprite />
 
