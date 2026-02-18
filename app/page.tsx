@@ -65,7 +65,7 @@ export default function Home() {
             className="flex-1 flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-4 py-5 hover:bg-white/10 transition-all group"
           >
             <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center">
-              <img src="/sportfun-logo.png" alt="Sport.Fun" className="w-8 h-8 object-contain" />
+              <img src="/sportfun-logo.png" alt="Sport.Fun" className="w-6 h-6 object-contain" />
             </div>
             <span className="text-white font-semibold text-xs">Sport.Fun</span>
             <span className="text-neutral-500 text-[10px]">play now</span>
