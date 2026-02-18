@@ -109,11 +109,6 @@ export default function Home() {
           status: online
         </div>
 
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-block text-xs text-neutral-600 hover:text-white transition-colors underline underline-offset-2 decoration-neutral-700"
-        >
       </div>
     </main>
   );
