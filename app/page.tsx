@@ -32,31 +32,17 @@ export default function Home() {
           <Nav />
         </div>
 
-        <div className="flex flex-col gap-3 w-full max-w-sm">
+        <div className="flex flex-row gap-3 justify-center">
           {/* Momo Twitter */}
           <a
             href="https://x.com/loyalmomobot"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 sm:gap-4 bg-white/5 border border-white/10 rounded-2xl px-4 sm:px-5 py-3 sm:py-4 hover:bg-white/10 transition-all group"
+            className="flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 hover:bg-white/10 transition-all group"
           >
-            <img
-              src="/momo-pfp.webp"
-              alt="Momo"
-              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-neutral-800 object-cover"
-            />
-            <div className="text-left flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-white font-semibold text-sm">Momo 🐵</span>
-                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-neutral-500">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </div>
-              <span className="text-neutral-500 text-xs sm:text-sm">@loyalmomobot</span>
-            </div>
-            <svg viewBox="0 0 24 24" className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M7 17L17 7M17 7H7M17 7V17" />
-            </svg>
+            <img src="/momo-pfp.webp" alt="Momo" className="w-10 h-10 rounded-full bg-neutral-800 object-cover" />
+            <span className="text-white font-semibold text-xs">Momo 🐵</span>
+            <span className="text-neutral-500 text-[10px]">@loyalmomobot</span>
           </a>
 
           {/* Weekly Claw Newsletter */}
@@ -64,40 +50,23 @@ export default function Home() {
             href="https://weeklyclaw.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 sm:gap-4 bg-white/5 border border-white/10 rounded-2xl px-4 sm:px-5 py-3 sm:py-4 hover:bg-white/10 transition-all group"
+            className="flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 hover:bg-white/10 transition-all group"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-neutral-800 flex items-center justify-center text-lg font-bold text-white">
-              🗞️
-            </div>
-            <div className="text-left flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-white font-semibold text-sm">Weekly Claw</span>
-              </div>
-              <span className="text-neutral-500 text-xs sm:text-sm">newsletter</span>
-            </div>
-            <svg viewBox="0 0 24 24" className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M7 17L17 7M17 7H7M17 7V17" />
-            </svg>
+            <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-lg">🗞️</div>
+            <span className="text-white font-semibold text-xs">Weekly Claw</span>
+            <span className="text-neutral-500 text-[10px]">newsletter</span>
           </a>
 
           {/* Sport.Fun */}
           <a
+            href="https://pro.sport.fun/login/?referral_code=UPW5JLQO716"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 sm:gap-4 bg-white/5 border border-white/10 rounded-2xl px-4 sm:px-5 py-3 sm:py-4 hover:bg-white/10 transition-all group"
+            className="flex flex-col items-center gap-2 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 hover:bg-white/10 transition-all group"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-neutral-800 flex items-center justify-center text-lg font-bold text-white">
-              ⚽
-            </div>
-            <div className="text-left flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-white font-semibold text-sm">Sport.Fun</span>
-              </div>
-              <span className="text-neutral-500 text-xs sm:text-sm">play sport.fun</span>
-            </div>
-            <svg viewBox="0 0 24 24" className="w-4 h-4 text-neutral-600 group-hover:text-neutral-400 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M7 17L17 7M17 7H7M17 7V17" />
-            </svg>
+            <div className="w-10 h-10 rounded-full bg-neutral-800 flex items-center justify-center text-lg">⚽</div>
+            <span className="text-white font-semibold text-xs">Sport.Fun</span>
+            <span className="text-neutral-500 text-[10px]">play now</span>
           </a>
         </div>
 
